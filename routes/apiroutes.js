@@ -1,13 +1,27 @@
 const path = require(`path`);
 const uniqid = require(`uniqid`);
-const fs = require(`fs`);
+const apireq = require("express").Router();
 
-module.exports = (app) => {
+const { readFromFile, readAndAppend } = require("../helpers/fsUtils");
 
-  app.get(`/api/notes`, (req, res) => {
-    res.sendFile(path.join(__dirname, `../db/db.json`));
-  });
+apireq.get(`/notes`, (req, res) => {
+  console.info(`${req.method} request recieved for notes`);
 
+  readFromFile(`./db/db.json`).then((data) => res.json(JSON.parse(data)));
+});
 
+apireq.post(`/notes`, (req, res) => {
+  console.info(`${req.method} request recieved to submit note`);
 
-};
+  const { title, text } = req.body;
+
+  if (title && text) {
+    const newNote = {
+      title,
+      text,
+      id: uniqid(),
+    };
+  }
+});
+
+module.exports = apireq;
