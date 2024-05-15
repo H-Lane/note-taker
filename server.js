@@ -1,5 +1,4 @@
 const express = require(`express`);
-const path = require(`path`);
 
 const PORT = 3001;
 
@@ -10,9 +9,11 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(express.static("public"));
 
+const html = require(`./routes/index`);
+const api = require(`./routes/index`);
 
-
-
+app.use(`/`, html);
+app.use(`/api`, api);
 
 
 app.listen(PORT, () =>
