@@ -5,6 +5,6 @@ const notesRouter = require("./apiroutes");
 const htmlRouter = require("./htmlroutes");
 
 router.use("/api", notesRouter);
-router.use("/", htmlRouter);
+router.use("/notes", htmlRouter);
 
 module.exports = router;
