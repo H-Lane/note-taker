@@ -21,6 +21,17 @@ apireq.post(`/notes`, (req, res) => {
       text,
       id: uniqid(),
     };
+
+    readAndAppend(newNote, `../db/db.json`)
+
+    const response = {
+      status: `success`,
+      body: newNote,
+    };
+
+    res.json(response);
+  } else {
+    res.json(`Error in creating new note`);
   }
 });
 
