@@ -22,7 +22,7 @@ apireq.post(`/`, (req, res) => {
       id: uniqid(),
     };
 
-    readAndAppend(newNote, `../db/db.json`)
+    readAndAppend(newNote, `./db/db.json`);
 
     const response = {
       status: `success`,
