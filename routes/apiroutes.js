@@ -4,13 +4,13 @@ const apireq = require("express").Router();
 
 const { readFromFile, readAndAppend } = require("../helpers/fsUtils");
 
-apireq.get(`/notes`, (req, res) => {
+apireq.get(`/`, (req, res) => {
   console.info(`${req.method} request recieved for notes`);
 
   readFromFile(`./db/db.json`).then((data) => res.json(JSON.parse(data)));
 });
 
-apireq.post(`/notes`, (req, res) => {
+apireq.post(`/`, (req, res) => {
   console.info(`${req.method} request recieved to submit note`);
 
   const { title, text } = req.body;
