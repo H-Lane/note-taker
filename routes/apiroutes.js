@@ -3,19 +3,17 @@ const uniqid = require(`uniqid`);
 const apireq = require("express").Router();
 const db = require("../db/db.json");
 const fs = require("fs");
+const dbFilePath = path.resolve(__dirname, "..", "db", "db.json");
 
-const {
-  readFromFile,
-  writeToFile,
-  readAndAppend,
-} = require("../helpers/fsUtils");
 
 apireq.get(`/`, (req, res) => {
   console.info(`${req.method} request recieved for notes`);
 
-  fs.readFile(db, (err, data) => {
+  fs.readFile(dbFilePath, (err, data) => {
     if (err) throw err;
-    res.json(JSON.parse(data));
+
+    let fullDb = JSON.parse(data);
+    res.json(fullDb);
   });
 });
 
@@ -31,7 +29,9 @@ apireq.post(`/`, (req, res) => {
       id: uniqid(),
     };
 
-    readAndAppend(newNote, db);
+    db.push(newNote);
+
+    fs.writeFileSync("./db/db.json", JSON.stringify(db));
 
     const response = {
       status: `success`,
@@ -47,9 +47,9 @@ apireq.post(`/`, (req, res) => {
 apireq.delete(`/:id`, (req, res) => {
   const newDb = db.filter((note) => note.id !== req.params.id);
 
-  fs.writeFileSync(db, JSON.stringify(newDb));
+  fs.writeFileSync(dbFilePath, JSON.stringify(newDb));
 
-  res.json(fs.readFile.json(newDb));
+  res.json({message: `Deleted note with id ${req.params.id}`});
 });
 
 module.exports = apireq;
