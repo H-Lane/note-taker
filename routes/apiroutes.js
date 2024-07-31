@@ -1,13 +1,22 @@
 const path = require(`path`);
 const uniqid = require(`uniqid`);
 const apireq = require("express").Router();
+const db = require("../db/db.json");
+const fs = require("fs");
 
-const { readFromFile, readAndAppend } = require("../helpers/fsUtils");
+const {
+  readFromFile,
+  writeToFile,
+  readAndAppend,
+} = require("../helpers/fsUtils");
 
 apireq.get(`/`, (req, res) => {
   console.info(`${req.method} request recieved for notes`);
 
-  readFromFile(`./db/db.json`).then((data) => res.json(JSON.parse(data)));
+  fs.readFile(db, (err, data) => {
+    if (err) throw err;
+    res.json(JSON.parse(data));
+  });
 });
 
 apireq.post(`/`, (req, res) => {
@@ -22,7 +31,7 @@ apireq.post(`/`, (req, res) => {
       id: uniqid(),
     };
 
-    readAndAppend(newNote, `./db/db.json`);
+    readAndAppend(newNote, db);
 
     const response = {
       status: `success`,
@@ -33,6 +42,14 @@ apireq.post(`/`, (req, res) => {
   } else {
     res.json(`Error in creating new note`);
   }
+});
+
+apireq.delete(`/:id`, (req, res) => {
+  const newDb = db.filter((note) => note.id !== req.params.id);
+
+  fs.writeFileSync(db, JSON.stringify(newDb));
+
+  res.json(fs.readFile.json(newDb));
 });
 
 module.exports = apireq;
